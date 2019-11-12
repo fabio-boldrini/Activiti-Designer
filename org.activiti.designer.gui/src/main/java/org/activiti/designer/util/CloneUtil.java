@@ -83,6 +83,7 @@ public final class CloneUtil {
       cloneElement = clone((ServiceTask) element, diagram);
     } else if (element instanceof EndEvent) {
       cloneElement = clone((EndEvent) element, diagram);
+      ((EndEvent) cloneElement).setAttributes(((EndEvent) element).getAttributes());
     } else if (element instanceof ExclusiveGateway) {
       cloneElement = clone((ExclusiveGateway) element, diagram);
     } else if (element instanceof InclusiveGateway) {
