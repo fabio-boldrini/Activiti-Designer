@@ -15,7 +15,7 @@ package org.activiti.designer.kickstart.form.features;
 
 import org.activiti.designer.kickstart.form.diagram.KickstartFormFeatureProvider;
 import org.activiti.designer.kickstart.form.diagram.layout.KickstartFormLayouter;
-import org.eclipse.graphiti.features.ICustomUndoableFeature;
+import org.eclipse.graphiti.features.ICustomUndoRedoFeature;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
 import org.eclipse.graphiti.features.impl.DefaultMoveShapeFeature;
@@ -26,7 +26,7 @@ import org.eclipse.graphiti.features.impl.DefaultMoveShapeFeature;
  * 
  * @author Frederik Heremans
  */
-public class MoveFormComponentFeature extends DefaultMoveShapeFeature implements ICustomUndoableFeature {
+public class MoveFormComponentFeature extends DefaultMoveShapeFeature implements ICustomUndoRedoFeature {
 
   public MoveFormComponentFeature(KickstartFormFeatureProvider fp) {
     super(fp);
@@ -55,7 +55,13 @@ public class MoveFormComponentFeature extends DefaultMoveShapeFeature implements
   }
 
   @Override
-  public void undo(IContext context) {
+  public void preUndo(IContext arg0) {
+  	// TODO Auto-generated method stub
+  	
+  }
+  
+  @Override
+  public void postUndo(IContext context) {
     // Since the model is updated by the layout based on the actual shape order,
     // it's sufficient to force a re-layout at this point
     getFormLayouter().relayout(((IMoveShapeContext)context).getTargetContainer());
@@ -63,7 +69,13 @@ public class MoveFormComponentFeature extends DefaultMoveShapeFeature implements
   }
   
   @Override
-  public void redo(IContext context) {
+  public void preRedo(IContext arg0) {
+  	// TODO Auto-generated method stub
+  	
+  }
+  
+  @Override
+  public void postRedo(IContext context) {
     // Since the model is updated by the layout based on the actual shape order,
     // it's sufficient to force a re-layout at this point
     getFormLayouter().relayout(((IMoveShapeContext)context).getTargetContainer());

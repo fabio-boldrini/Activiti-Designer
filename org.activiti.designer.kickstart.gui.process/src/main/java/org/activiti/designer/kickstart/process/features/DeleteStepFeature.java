@@ -22,13 +22,13 @@ import org.activiti.workflow.simple.definition.ListStepDefinition;
 import org.activiti.workflow.simple.definition.ParallelStepsDefinition;
 import org.activiti.workflow.simple.definition.StepDefinition;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.graphiti.features.ICustomUndoableFeature;
+import org.eclipse.graphiti.features.ICustomUndoRedoFeature;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.IDeleteContext;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.ui.features.DefaultDeleteFeature;
 
-public class DeleteStepFeature extends DefaultDeleteFeature implements ICustomUndoableFeature {
+public class DeleteStepFeature extends DefaultDeleteFeature implements ICustomUndoRedoFeature {
 
   protected StepDefinition deletedObject;
   protected StepDefinition definitionContainer;
@@ -62,7 +62,7 @@ public class DeleteStepFeature extends DefaultDeleteFeature implements ICustomUn
         super.delete(context);
         
         // Call redo, which contains the model-update only
-        redo(context);
+        postRedo(context);
         
         // When deleting, force a re-layout of the parent container after shape has been removed
         if(context.getPictogramElement() instanceof ContainerShape) {
@@ -81,10 +81,16 @@ public class DeleteStepFeature extends DefaultDeleteFeature implements ICustomUn
   protected KickstartProcessLayouter getFormLayouter() {
     return ((KickstartProcessFeatureProvider)getFeatureProvider()).getProcessLayouter(); 
   }
+  
+  @Override
+  public void preUndo(IContext arg0) {
+  	// TODO Auto-generated method stub
+  	
+  }
 
   @SuppressWarnings("unchecked")
   @Override
-  public void undo(IContext context) {
+  public void postUndo(IContext context) {
     KickstartProcessMemoryModel model = (ModelHandler.getKickstartProcessModel(EcoreUtil.getURI(getDiagram())));
     if(model != null && model.isInitialized() && deletedObject != null && definitionContainer != null) {
       if(definitionContainer instanceof ParallelStepsDefinition && deletedObject instanceof ListStepDefinition<?>) {
@@ -99,6 +105,12 @@ public class DeleteStepFeature extends DefaultDeleteFeature implements ICustomUn
       getFormLayouter().relayout((ContainerShape) ((IDeleteContext)context).getPictogramElement(), (KickstartProcessFeatureProvider) getFeatureProvider());
     }
   }
+  
+  @Override
+  public void preRedo(IContext arg0) {
+  	// TODO Auto-generated method stub
+  	
+  }
 
   @Override
   public boolean canRedo(IContext context) {
@@ -107,7 +119,7 @@ public class DeleteStepFeature extends DefaultDeleteFeature implements ICustomUn
 
   @SuppressWarnings("unchecked")
   @Override
-  public void redo(IContext context) {
+  public void postRedo(IContext context) {
     KickstartProcessMemoryModel model = (ModelHandler.getKickstartProcessModel(EcoreUtil.getURI(getDiagram())));
     if(model != null && model.isInitialized() && deletedObject != null && definitionContainer != null) {
       if(definitionContainer instanceof ParallelStepsDefinition && deletedObject instanceof ListStepDefinition<?>) {

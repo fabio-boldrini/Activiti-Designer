@@ -21,13 +21,13 @@ import org.activiti.workflow.simple.definition.form.FormPropertyDefinition;
 import org.activiti.workflow.simple.definition.form.FormPropertyDefinitionContainer;
 import org.activiti.workflow.simple.definition.form.FormPropertyGroup;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.graphiti.features.ICustomUndoableFeature;
+import org.eclipse.graphiti.features.ICustomUndoRedoFeature;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.IDeleteContext;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.ui.features.DefaultDeleteFeature;
 
-public class DeleteFormComponentFeature extends DefaultDeleteFeature implements ICustomUndoableFeature {
+public class DeleteFormComponentFeature extends DefaultDeleteFeature implements ICustomUndoRedoFeature {
 
   protected Object deletedObject;
   protected FormPropertyDefinitionContainer definitionContainer;
@@ -61,7 +61,7 @@ public class DeleteFormComponentFeature extends DefaultDeleteFeature implements 
       super.delete(context);
       
       // Call redo, which contains the model-update only
-      redo(context);
+      postRedo(context);
       
       // When deleting, force a re-layout of the parent container after shape has been removed
       if(context.getPictogramElement() instanceof ContainerShape) {
@@ -75,9 +75,15 @@ public class DeleteFormComponentFeature extends DefaultDeleteFeature implements 
   protected KickstartFormLayouter getFormLayouter() {
     return ((KickstartFormFeatureProvider)getFeatureProvider()).getFormLayouter(); 
   }
+  
+  @Override
+  public void preUndo(IContext arg0) {
+  	// TODO Auto-generated method stub
+  	
+  }
 
   @Override
-  public void undo(IContext context) {
+  public void postUndo(IContext context) {
     KickstartFormMemoryModel model = (ModelHandler.getKickstartFormMemoryModel(EcoreUtil.getURI(getDiagram())));
     if(model != null && model.isInitialized() && deletedObject != null) {
       // Just add the definition to the model at the end, relayouting of the container
@@ -101,7 +107,13 @@ public class DeleteFormComponentFeature extends DefaultDeleteFeature implements 
   }
 
   @Override
-  public void redo(IContext context) {
+  public void preRedo(IContext arg0) {
+  	// TODO Auto-generated method stub
+  	
+  }
+  
+  @Override
+  public void postRedo(IContext context) {
     KickstartFormMemoryModel model = (ModelHandler.getKickstartFormMemoryModel(EcoreUtil.getURI(getDiagram())));
     if(model != null && model.isInitialized()) {
       if(deletedObject instanceof FormPropertyDefinition) {

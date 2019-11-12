@@ -18,7 +18,7 @@ import org.activiti.designer.util.editor.ModelHandler;
 import org.activiti.workflow.simple.definition.form.FormPropertyDefinition;
 import org.activiti.workflow.simple.definition.form.FormPropertyDefinitionContainer;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.graphiti.features.ICustomUndoableFeature;
+import org.eclipse.graphiti.features.ICustomUndoRedoFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.ICreateContext;
@@ -31,7 +31,7 @@ import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
  *  
  * @author Frederik Heremans
  */
-public abstract class AbstractCreateFormPropertyFeature extends AbstractCreateFeature implements ICustomUndoableFeature {
+public abstract class AbstractCreateFormPropertyFeature extends AbstractCreateFeature implements ICustomUndoRedoFeature {
 
   protected FormPropertyDefinition createdDefinition;
   protected FormPropertyDefinitionContainer definitionContainer;
@@ -70,7 +70,13 @@ public abstract class AbstractCreateFormPropertyFeature extends AbstractCreateFe
   }
   
   @Override
-  public void undo(IContext context) {
+  public void preUndo(IContext arg0) {
+  	// TODO Auto-generated method stub
+  	
+  }
+  
+  @Override
+  public void postUndo(IContext context) {
     KickstartFormMemoryModel model = (ModelHandler.getKickstartFormMemoryModel(EcoreUtil.getURI(getDiagram())));
     if (model != null && model.isInitialized() && createdDefinition != null) {
       definitionContainer.removeFormProperty(createdDefinition);
@@ -78,7 +84,13 @@ public abstract class AbstractCreateFormPropertyFeature extends AbstractCreateFe
   }
   
   @Override
-  public void redo(IContext context) {
+  public void preRedo(IContext arg0) {
+  	// TODO Auto-generated method stub
+  	
+  }
+  
+  @Override
+  public void postRedo(IContext context) {
     KickstartFormMemoryModel model = (ModelHandler.getKickstartFormMemoryModel(EcoreUtil.getURI(getDiagram())));
     if (model != null && model.isInitialized() && createdDefinition != null) {
       definitionContainer.addFormProperty(createdDefinition);

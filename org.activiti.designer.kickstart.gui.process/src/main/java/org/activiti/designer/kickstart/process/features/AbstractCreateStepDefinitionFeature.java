@@ -18,7 +18,7 @@ import org.activiti.designer.util.editor.ModelHandler;
 import org.activiti.workflow.simple.definition.StepDefinition;
 import org.activiti.workflow.simple.definition.StepDefinitionContainer;
 import org.eclipse.emf.ecore.util.EcoreUtil;
-import org.eclipse.graphiti.features.ICustomUndoableFeature;
+import org.eclipse.graphiti.features.ICustomUndoRedoFeature;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IContext;
 import org.eclipse.graphiti.features.context.ICreateContext;
@@ -31,7 +31,7 @@ import org.eclipse.graphiti.features.impl.AbstractCreateFeature;
  *  
  * @author Tijs Rademakers
  */
-public abstract class AbstractCreateStepDefinitionFeature extends AbstractCreateFeature implements ICustomUndoableFeature {
+public abstract class AbstractCreateStepDefinitionFeature extends AbstractCreateFeature implements ICustomUndoRedoFeature {
 
   protected StepDefinition createdDefinition;
   protected StepDefinitionContainer<?> definitionContainer;
@@ -70,15 +70,27 @@ public abstract class AbstractCreateStepDefinitionFeature extends AbstractCreate
   }
   
   @Override
-  public void undo(IContext context) {
-    KickstartProcessMemoryModel model = (ModelHandler.getKickstartProcessModel(EcoreUtil.getURI(getDiagram())));
-    if (model != null && model.isInitialized() && createdDefinition != null) {
-      definitionContainer.getSteps().remove(createdDefinition);
-    }
+  public void preUndo(IContext arg0) {
+  	// TODO Auto-generated method stub
+  	
   }
   
   @Override
-  public void redo(IContext context) {
+  public void postUndo(IContext arg0) {
+  	KickstartProcessMemoryModel model = (ModelHandler.getKickstartProcessModel(EcoreUtil.getURI(getDiagram())));
+  	if (model != null && model.isInitialized() && createdDefinition != null) {
+  		definitionContainer.getSteps().remove(createdDefinition);
+  	}
+  }
+  
+  @Override
+  public void preRedo(IContext arg0) {
+  	// TODO Auto-generated method stub
+  	
+  }
+  
+  @Override
+  public void postRedo(IContext context) {
     KickstartProcessMemoryModel model = (ModelHandler.getKickstartProcessModel(EcoreUtil.getURI(getDiagram())));
     if (model != null && model.isInitialized() && createdDefinition != null) {
       definitionContainer.addStep(createdDefinition);
